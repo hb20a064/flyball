@@ -1,7 +1,7 @@
 <html>
 
 <head>
-    <title>balloon</title>
+    <title>ballon</title>
     <meta name="viewport" content="width=device-width, viewport-fit=cover, shrink-to-fit=no" />
     <style>
         * {
@@ -69,6 +69,7 @@
         let flycount = 0;
         let kaze = 0.1;
         let m01Flg = 1;
+        let seflg = false;
 
         const atari_geometry = new THREE.BoxGeometry(0.1, 0.1, 0.1);
         const atari_material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
@@ -108,18 +109,18 @@
         }
 
 
-        function createballn(x, y, z, bc) {
+        function createballon(x, y, z, bc) {
             const path = new CustomSinCurve(10);
             const geometry = new THREE.TubeGeometry(path, 100, 0.01, 36, false);
             const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
             material.wireframe = true;
             const mesh = new THREE.Mesh(geometry, material);
 
-            const ballngeometry = new THREE.SphereGeometry(0.5, 64, 32);
-            const ballnmaterial = new THREE.MeshBasicMaterial({ color: bc });
-            const balln = new THREE.Mesh(ballngeometry, ballnmaterial);
-            balln.position.z -= 0.7;
-            mesh.add(balln);
+            const ballongeometry = new THREE.SphereGeometry(0.5, 64, 32);
+            const ballonmaterial = new THREE.MeshBasicMaterial({ color: bc });
+            const ballon = new THREE.Mesh(ballongeometry, ballonmaterial);
+            ballon.position.z -= 0.7;
+            mesh.add(ballon);
 
             const sen_geometry = new THREE.TetrahedronGeometry(0.1, 0);
             const sen_material = new THREE.MeshBasicMaterial({ color: bc });
@@ -134,29 +135,47 @@
             return mesh;
         }
 
-        const balln = createballn(0, 0, 0, 0xff5c00);
-        const balln1 = createballn(0.2, -0.4, 0.3, 0xff0000);
-        const balln2 = createballn(-0.35, -0.55, 0, 0x7fff00);
-        const balln3 = createballn(-0.92, -0.55, 0, 0x00bfff);
-        const balln4 = createballn(-0.62, 0, -0.2, 0xffff00);
-        balln1.rotation.y -= 15 * (Math.PI / 180);
-        balln1.rotation.x -= 30 * (Math.PI / 180);
-        balln2.rotation.y += 20 * (Math.PI / 180);
-        balln2.rotation.x -= 30 * (Math.PI / 180);
-        balln3.rotation.y += 50 * (Math.PI / 180);
-        balln3.rotation.x -= 30 * (Math.PI / 180);
-        balln4.rotation.y += 35 * (Math.PI / 180);
+        const ballon = createballon(0, 0, 0, 0xff5c00);
+        const ballon1 = createballon(0.2, -0.4, 0.3, 0xff0000);
+        const ballon2 = createballon(-0.35, -0.55, 0, 0x7fff00);
+        const ballon3 = createballon(-0.92, -0.55, 0, 0x00bfff);
+        const ballon4 = createballon(-0.62, 0, -0.2, 0xffff00);
+        ballon1.rotation.y -= 15 * (Math.PI / 180);
+        ballon1.rotation.x -= 30 * (Math.PI / 180);
+        ballon2.rotation.y += 20 * (Math.PI / 180);
+        ballon2.rotation.x -= 30 * (Math.PI / 180);
+        ballon3.rotation.y += 50 * (Math.PI / 180);
+        ballon3.rotation.x -= 30 * (Math.PI / 180);
+        ballon4.rotation.y += 35 * (Math.PI / 180);
 
-        atari.add(balln);
-        balln.position.set(0.65, 0, -0.9);
-        atari.add(balln1);
-        balln1.position.set(0.85, -0.4, -0.6);
-        atari.add(balln2);
-        balln2.position.set(0.3, -0.55, -0.9);
-        atari.add(balln3);
-        balln3.position.set(-0.27, -0.55, -0.9);
-        atari.add(balln4);
-        balln4.position.set(0.03, 0, -1.1);
+        atari.add(ballon);
+        ballon.position.set(0.65, 0, -0.9);
+        atari.add(ballon1);
+        ballon1.position.set(0.85, -0.4, -0.6);
+        atari.add(ballon2);
+        ballon2.position.set(0.3, -0.55, -0.9);
+        atari.add(ballon3);
+        ballon3.position.set(-0.27, -0.55, -0.9);
+        atari.add(ballon4);
+        ballon4.position.set(0.03, 0, -1.1);
+
+        const listener = new THREE.AudioListener();
+        camera.add(listener);
+        const AudioLoader = new THREE.AudioLoader();
+        const kazeSound = new THREE.Audio(listener);
+        AudioLoader.load('./kaze2.mp3', function (buffer) {
+            kazeSound.setBuffer(buffer);
+            kazeSound.setLoop(false);
+            kazeSound.setVolume(0.5);
+
+        });
+        // const kazeSound = new THREE.Audio(listener);
+        // AudioLoader.load('./kaze3.mp3', function (buffer) {
+        //     kazeSound.setBuffer(buffer);
+        //     kazeSound.setLoop(false);
+        //     kazeSound.setVolume(0.5);
+
+        // });
 
 
         function animate() {
@@ -169,19 +188,23 @@
             }
             count += 1;
             if (m01Flg != 1) {
-                balln.position.x += 0.015;
-                balln.position.z -= flycount ** 2 * 0.0025;
-                balln1.position.x += 0.015;
-                balln1.position.y -= 0.01;
-                balln1.position.z -= flycount ** 2 * 0.0025;
-                balln2.position.y += 0.02;
-                balln2.position.z -= flycount ** 2 * 0.0025;
-                balln3.position.x -= 0.015;
-                balln3.position.y += 0.01;
-                balln3.position.z -= flycount ** 2 * 0.0025;
-                balln4.position.x -= 0.015;
-                balln4.position.y += 0.01;
-                balln4.position.z -= flycount ** 2 * 0.0025;
+                if (seflg == false) {
+                    kazeSound.play();
+                    seflg = true;
+                }
+                ballon.position.x += 0.015;
+                ballon.position.z -= flycount ** 2 * 0.0025;
+                ballon1.position.x += 0.015;
+                ballon1.position.y -= 0.01;
+                ballon1.position.z -= flycount ** 2 * 0.0025;
+                ballon2.position.y += 0.02;
+                ballon2.position.z -= flycount ** 2 * 0.0025;
+                ballon3.position.x -= 0.015;
+                ballon3.position.y += 0.01;
+                ballon3.position.z -= flycount ** 2 * 0.0025;
+                ballon4.position.x -= 0.015;
+                ballon4.position.y += 0.01;
+                ballon4.position.z -= flycount ** 2 * 0.0025;
                 flycount += 0.05;
             }
             renderer.render(scene, camera);
